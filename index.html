@@ -112,9 +112,7 @@
     .parity-cell{background:#0A070366;border:1px solid var(--bdr);border-radius:12px;padding:12px 8px;text-align:center;}
     .parity-k{font-size:13px;font-weight:800;color:var(--muted);margin-bottom:5px;letter-spacing:.04em;}
     .parity-v{font-size:19px;font-weight:800;color:var(--white);}
-    .parity-cell.mid{border-color:var(--gold-dk);}
-    .parity-cell.mid .parity-k{color:var(--gold);}
-    .parity-cell.mid .parity-v{color:var(--gold-lt);}
+
     .parity-lbl{font-size:13px;color:var(--muted);font-weight:600;margin-top:4px;}
 
     /* Refresh button */
@@ -353,6 +351,12 @@ const T = {
     signIn:"Sign in with Google", signOut:"Sign Out",
     signingIn:"Signing in…", profit:"Profit", loss:"Loss",
     vaultFeature:"Vault", zakatFeature:"Zakat Audit",
+    proTitle:"Unlock Vault & Zakat", proSubtitle:"Track your gold. Calculate your Zakat.",
+    proPrice:"SAR 19 / month", proBtn:"Subscribe Now",
+    proFeature1:"📦 Personal Gold Vault", proFeature2:"🌙 Zakat Calculator (AAOIFI)",
+    proFeature3:"📊 Live P&L on every piece", proFeature4:"🔒 Private & secure per account",
+    proNote:"After subscribing, send your email via WhatsApp to activate within 24h.",
+    dealerBtn:"Find a Better Dealer →", dealerMsg:"أريد الاستفسار عن سعر أفضل",
   },
   ar: {
     appName:"شيشكة جولد", subtitle:"حاسبة أسعار الذهب السعودي", credit:"من Doo7 لـ Shai5ah ♥",
@@ -396,6 +400,12 @@ const T = {
     signIn:"تسجيل الدخول بجوجل", signOut:"تسجيل الخروج",
     signingIn:"جارٍ الدخول…", profit:"ربح", loss:"خسارة",
     vaultFeature:"الخزنة", zakatFeature:"تدقيق الزكاة",
+    proTitle:"افتح الخزنة والزكاة", proSubtitle:"تابع ذهبك. احسب زكاتك.",
+    proPrice:"١٩ ريال / شهر", proBtn:"اشترك الآن",
+    proFeature1:"📦 خزنة ذهب شخصية", proFeature2:"🌙 حاسبة الزكاة (معيار AAOIFI)",
+    proFeature3:"📊 ربح وخسارة لكل قطعة", proFeature4:"🔒 خاص وآمن لكل حساب",
+    proNote:"بعد الاشتراك، أرسل بريدك الإلكتروني عبر واتساب للتفعيل خلال 24 ساعة.",
+    dealerBtn:"ابحث عن تاجر أفضل ←", dealerMsg:"أريد الاستفسار عن سعر أفضل",
   }
 };
 // ── PRICE FETCH — CORS-proxy cascade ─────────────────────────────
@@ -645,7 +655,7 @@ function App(){
     setVaultState([]);
   };
 
-  // ── AUTH GATE component ────────────────────────────────────────
+  // ── AUTH GATE component ────────────────────────────────────────────
   const AuthGate=({feature})=>(
     <div className="sec" style={{paddingTop:32}}>
       <div className="auth-gate">
@@ -736,7 +746,7 @@ function App(){
               <div className="plbl" style={{marginBottom:8}}>{t.gramParity}</div>
               <div className="parity-row">
                 {["24K","21K","18K"].map((k,i)=>(
-                  <div key={k} className={`parity-cell${i===1?" mid":""}`}>
+                  <div key={k} className="parity-cell">
                     <div className="parity-k">{k}</div>
                     <div className="parity-v">{fsarShort(ppg(eff,k))}</div>
                     <div className="parity-lbl">{t.perGram}</div>
@@ -850,6 +860,7 @@ function App(){
                   <div className="vrdttl">{v.title}</div>
                   <div className="vrddesc">{v.desc}</div>
                   {mAmt!=null&&<div className="vrdamt">{t.extraPaid(fsar(Math.abs(mAmt)))}</div>}
+
                 </div>
               );
             })()}
