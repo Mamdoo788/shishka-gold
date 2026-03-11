@@ -22,6 +22,13 @@
 
     // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────
     // Get this from: console.firebase.google.com → Project Settings → Your apps → Web app
+    // ── FIREBASE CONFIG NOTE ─────────────────────────────────────────
+    // The apiKey below is a PUBLIC project identifier — this is by design.
+    // Firebase security is enforced via Security Rules, not by hiding this key.
+    // See: firebase.google.com/docs/projects/api-keys
+    // Restrict this key in Google Cloud Console → APIs → Credentials
+    // to only allow: https://mamdoo788.github.io
+    // ─────────────────────────────────────────────────────────────────
     const firebaseConfig = {
       apiKey:            "AIzaSyBJlTHQJerjA6vntgAu3fLbWVP66M9SAQU",
       authDomain:        "shishka-gold.firebaseapp.com",
@@ -159,6 +166,8 @@
     .vrd.fair{background:#3DD68C12;border:2px solid #3DD68C44;}
     .vrd.okay{background:#F59E0B12;border:2px solid #F59E0B44;}
     .vrd.high{background:#F04F4F12;border:2px solid #F04F4F44;}
+    .vrd.below{background:#FF00FF12;border:2px solid #FF006644;}
+    .vrd.below .vrdttl{color:#FF4488;}
     .vrdico{font-size:42px;margin-bottom:10px;}
     .vrdttl{font-size:24px;font-weight:800;margin-bottom:8px;}
     .vrd.fair .vrdttl{color:#3DD68C;}.vrd.okay .vrdttl{color:#F59E0B;}.vrd.high .vrdttl{color:#F04F4F;}
@@ -315,11 +324,23 @@ const T = {
     basePrice:"Base Price (incl. VAT)", markup:"Markup (Workmanship)",
     margin:"Effective Margin", matrix:"Sensitivity Matrix (Target Offer)",
     vatNote:"* Includes 15% statutory VAT", enterWeight:"Enter weight above to see target prices",
-    fair:"Fair Price", okay:"A Bit High", high:"Overpriced",
-    fairDesc:"This is a reasonable price. The extra charge is within normal range.",
-    okayDesc:(p)=>`The dealer is charging ${p}% above gold value. You may want to negotiate.`,
-    highDesc:(p)=>`The dealer is charging ${p}% above gold value. This is too high — try another dealer.`,
-    extraPaid:(a)=>`You are paying ${a} extra in workmanship`,
+    vrdBelowTitle:"Below Spot — Red Flag",
+    vrdBelowDesc:"Price is below gold value. Verify the weight and karat before proceeding.",
+    vrd24SpotTitle:"Spot Accurate",
+    vrd24SpotDesc:"Clean price — right at gold value. Exactly what 24K should cost.",
+    vrd24LightTitle:"Light Premium",
+    vrd24LightDesc:(p)=>`${p}% above spot. Acceptable for minting or handling — still a fair deal.`,
+    vrd24OverTitle:"Overpriced for 24K",
+    vrd24OverDesc:(p)=>`${p}% markup on pure gold. 24K carries no workmanship — leave or negotiate hard.`,
+    vrdCheapTitle:"Suspiciously Cheap",
+    vrdCheapDesc:"Below 5% on jewelry is a red flag. No dealer breaks even at spot. Question the karat or authenticity.",
+    vrdFairTitle:"Fair Price",
+    vrdFairDesc:(p)=>`${p}% workmanship — within the normal range for jewelry. Proceed with confidence.`,
+    vrdNegTitle:"Room to Negotiate",
+    vrdNegDesc:(p)=>`${p}% markup is above average. A reasonable counteroffer should bring this down.`,
+    vrdHighTitle:"Walk Away",
+    vrdHighDesc:(p)=>`${p}% premium is excessive. Try another dealer — this price does not reflect market rates.`,
+    extraPaid:(a)=>`You are paying ${a} above gold value`,
     vaultTab:"Vault & Zakat", myGold:"My Gold", zakat:"Zakat",
     totalValue:"Total Value", totalPaid:"Total Paid", pnl:"P&L",
     addItem:"Add Item", itemName:"Name", goldType:"Gold Type",
@@ -340,17 +361,29 @@ const T = {
     gramParity:"سعر الجرام (ريال · شامل 15% ضريبة)", perGram:"لكل جرام",
     updated:"آخر تحديث:", refresh:"تحديث سعر الذهب", loading:"جارٍ التحديث…",
     setManual:"إدخال السعر يدوياً", hideManual:"إخفاء الإدخال اليدوي",
-    usdPerOz:"USD price per ounce", set:"Set", clearAuto:"Clear — return to automatic",
+    usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
     scanner:"فاحص الأسعار", purity:"العيار", weight:"الوزن (جرام)",
     offer:"سعر التاجر الإجمالي (ريال)", deLayer:"تحليل السعر",
-    basePrice:"Base Price (incl. VAT)", markup:"Markup (Workmanship)",
+    basePrice:"السعر الأساسي (شامل الضريبة)", markup:"هامش الصنعة",
     margin:"نسبة الهامش الفعلي", matrix:"مصفوفة الأهداف",
     vatNote:"* يشمل ضريبة القيمة المضافة 15%", enterWeight:"أدخل الوزن لعرض الأسعار المستهدفة",
-    fair:"سعر عادل", okay:"مرتفع قليلاً", high:"مبالغ فيه",
-    fairDesc:"هذا سعر معقول، الزيادة ضمن الحدود الطبيعية.",
-    okayDesc:(p)=>`التاجر يضيف ${p}% فوق سعر الذهب. يمكنك التفاوض.`,
-    highDesc:(p)=>`التاجر يضيف ${p}% فوق سعر الذهب. مرتفع جداً — جرّب تاجراً آخر.`,
-    extraPaid:(a)=>`تدفع ${a} ريال زيادة كأجرة صنعة`,
+    vrdBelowTitle:"سعر أقل من الإفصاح — تحقق",
+    vrdBelowDesc:"السعر أقل من قيمة الذهب. تحقق من الوزن والعيار قبل المضي.",
+    vrd24SpotTitle:"سعر دقيق",
+    vrd24SpotDesc:"سعر نظيف — مطابق لقيمة الذهب. هذا هو المتوقع لعيار 24.",
+    vrd24LightTitle:"علاوة بسيطة",
+    vrd24LightDesc:(p)=>`${p}% فوق السعر الفوري. مقبول لرسوم السك أو التعامل.`,
+    vrd24OverTitle:"مبالغ فيه لعيار 24",
+    vrd24OverDesc:(p)=>`${p}% هامش على ذهب خالص. عيار 24 لا يستحق أجرة صنعة — تفاوض أو انسحب.`,
+    vrdCheapTitle:"سعر مريب",
+    vrdCheapDesc:"أقل من 5% على المجوهرات مثير للشك. لا يبيع التاجر بسعر الإفصاح. تحقق من العيار والجودة.",
+    vrdFairTitle:"سعر عادل",
+    vrdFairDesc:(p)=>`${p}% أجرة صنعة — ضمن النطاق الطبيعي للمجوهرات. تقدم بثقة.`,
+    vrdNegTitle:"مجال للتفاوض",
+    vrdNegDesc:(p)=>`${p}% فوق المتوسط. عرض مضاد معقول قد يخفض السعر.`,
+    vrdHighTitle:"انسحب",
+    vrdHighDesc:(p)=>`${p}% علاوة مفرطة. جرّب تاجراً آخر — هذا السعر لا يعكس السوق.`,
+    extraPaid:(a)=>`تدفع ${a} فوق قيمة الذهب`,
     vaultTab:"خزنتي والزكاة", myGold:"ذهبي", zakat:"الزكاة",
     totalValue:"إجمالي القيمة", totalPaid:"إجمالي المدفوع", pnl:"الربح والخسارة",
     addItem:"إضافة قطعة", itemName:"الاسم", goldType:"نوع الذهب",
@@ -441,7 +474,7 @@ const GoogleLogo=()=>(
 // ── APP ───────────────────────────────────────────────────────────
 function App(){
   const [page,setPage]=useState("main");
-  const [lang,setLang]=useState("ar");
+  const [lang,setLang]=useState(()=>localStorage.getItem('shishka_lang')||'ar');
   const t=T[lang];
   const [moreTab,setMoreTab]=useState("vault");
 
@@ -563,7 +596,22 @@ function App(){
   const fairV=hasWeight&&hasOffer?ppg(eff,scanK)*scanGN:null;
   const mAmt=fairV!=null?scanPN-fairV:null;
   const mPct=(fairV!=null&&fairV>0)?((scanPN-fairV)/fairV)*100:null;
-  const vrd=mPct===null?null:mPct<=5?"fair":mPct<=18?"okay":"high";
+  // Verdict logic — karat-aware
+  const getVerdict=(pct,karat)=>{
+    if(pct===null) return null;
+    if(pct<0) return "below";
+    if(karat==="24K"){
+      if(pct<=2) return "24spot";
+      if(pct<=8) return "24light";
+      return "24over";
+    }
+    // 21K and 18K jewelry rules
+    if(pct<=5)  return "cheap";
+    if(pct<=15) return "fair";
+    if(pct<=30) return "neg";
+    return "walkaway";
+  };
+  const vrd=getVerdict(mPct,scanK);
 
   // Vault calcs
   const vc=vault.map(p=>{
@@ -639,7 +687,7 @@ function App(){
         <div className="brand">
           <div className="bico"><GoldBar/></div>
           <div>
-            <div className="bname">{t.appName}</div>
+            <div className="bname" style={{fontFamily:"'Nunito',sans-serif",direction:"ltr"}}>Shishka Gold</div>
             <div className="bsub">{t.subtitle}<br/><span className="bcredit">{t.credit}</span></div>
           </div>
         </div>
@@ -783,17 +831,28 @@ function App(){
             </div>
             <div className="matrix-note">{t.vatNote}</div>
 
-            {/* Verdict — only if dealer price entered */}
-            {hasOffer&&vrd&&<div className={`vrd ${vrd}`} style={{marginTop:16}}>
-              <div className="vrdico">{vrd==="fair"?"✅":vrd==="okay"?"⚠️":"❌"}</div>
-              <div className="vrdttl">{vrd==="fair"?t.fair:vrd==="okay"?t.okay:t.high}</div>
-              <div className="vrddesc">
-                {vrd==="fair"?t.fairDesc
-                :vrd==="okay"?t.okayDesc(f1(mPct))
-                :t.highDesc(f1(mPct))}
-              </div>
-              {mAmt!=null&&mAmt>0&&<div className="vrdamt">{t.extraPaid(fsar(mAmt))}</div>}
-            </div>}
+            {/* Verdict — karat-aware */}
+            {hasOffer&&vrd&&(()=>{
+              const vrdMap={
+                "below": {cls:"below", ico:"🚨", title:t.vrdBelowTitle, desc:t.vrdBelowDesc},
+                "24spot":{cls:"fair",  ico:"✅", title:t.vrd24SpotTitle, desc:t.vrd24SpotDesc},
+                "24light":{cls:"okay", ico:"⚠️", title:t.vrd24LightTitle,desc:t.vrd24LightDesc(f1(mPct))},
+                "24over":{cls:"high",  ico:"❌", title:t.vrd24OverTitle, desc:t.vrd24OverDesc(f1(mPct))},
+                "cheap": {cls:"below", ico:"🚨", title:t.vrdCheapTitle,  desc:t.vrdCheapDesc},
+                "fair":  {cls:"fair",  ico:"✅", title:t.vrdFairTitle,   desc:t.vrdFairDesc(f1(mPct))},
+                "neg":   {cls:"okay",  ico:"🔶", title:t.vrdNegTitle,    desc:t.vrdNegDesc(f1(mPct))},
+                "walkaway":{cls:"high",ico:"❌", title:t.vrdHighTitle,   desc:t.vrdHighDesc(f1(mPct))},
+              };
+              const v=vrdMap[vrd]||vrdMap["fair"];
+              return(
+                <div className={`vrd ${v.cls}`} style={{marginTop:16}}>
+                  <div className="vrdico">{v.ico}</div>
+                  <div className="vrdttl">{v.title}</div>
+                  <div className="vrddesc">{v.desc}</div>
+                  {mAmt!=null&&<div className="vrdamt">{t.extraPaid(fsar(Math.abs(mAmt)))}</div>}
+                </div>
+              );
+            })()}
           </>:<div className="sph">{t.enterWeight}</div>}
           </div>
         </div>
@@ -824,7 +883,9 @@ function App(){
                 <div><div className="slbl">{t.totalValue}</div><div className="sval">{fsar(tFmv)}</div></div>
                 <div>
                   <div className="slbl">{tPnl>=0?t.profit:t.loss}</div>
-                  <div className="sval" style={{color:tPnl>=0?"var(--grn)":"var(--red)"}}>{fsar(Math.abs(tPnl))}</div>
+                  <div className="sval" style={{color:tPnl>=0?"var(--grn)":"var(--red)"}}>
+                    {tFmv>0?(tPnl>=0?"+":"")+((tPnl/vc.reduce((s,p)=>s+p.paid,0))*100).toFixed(1)+"%":"—"}
+                  </div>
                 </div>
               </div>}
               <div className="vcard">
@@ -842,13 +903,15 @@ function App(){
                   :vc.map((p,i)=>(
                     <div key={i} className="vitem">
                       <div className="vitop">
-                        <div><div className="viname">{p.name}</div><span className="vikarat">{p.karat} · {p.grams}g</span></div>
+                        <div><div className="viname">{p.name}</div><span className="vikarat">{p.karat} · {p.grams}g · {(PURITY[p.karat]*100).toFixed(1)}% pure</span></div>
                         <button className="vrm" onClick={()=>setVault(v=>v.filter((_,j)=>j!==i))}>×</button>
                       </div>
                       <div className="virow"><span>{t.totalValue}</span><span className="vival" style={{color:"var(--gold-lt)"}}>{fsar(p.fmv)}</span></div>
                       <div className="virow">
                         <span>{p.pnl>=0?t.profit:t.loss}</span>
-                        <span className="vival" style={{color:p.pnl>=0?"var(--grn)":"var(--red)"}}>{fsar(Math.abs(p.pnl))}</span>
+                        <span className="vival" style={{color:p.pnl>=0?"var(--grn)":"var(--red)"}}>
+                          {p.paid>0?(p.pnl>=0?"+":"")+((p.pnl/p.paid)*100).toFixed(1)+"%":"—"}
+                        </span>
                       </div>
                     </div>
                   ))
@@ -881,9 +944,16 @@ function App(){
                     </div>}
                     {vc.map((p,i)=>(
                       <div key={i} className="vitem">
-                        <div className="vitop"><div><div className="viname">{p.name}</div><span className="vikarat">{p.karat} · {p.grams}g</span></div></div>
+                        <div className="vitop"><div><div className="viname">{p.name}</div><span className="vikarat">{p.karat} · {p.grams}g · {(PURITY[p.karat]*100).toFixed(1)}% pure</span></div></div>
                         <div className="virow"><span>{t.daysHeld}</span><span className="vival">{p.days} days</span></div>
+                        <div className="virow"><span style={{color:"var(--gold)",fontSize:12}}>
+                          {p.karat} = {(PURITY[p.karat]*100).toFixed(1)}% pure · FMV = ppg × {p.grams}g
+                        </span></div>
                         <div className="virow"><span>{t.totalValue}</span><span className="vival">{fsar(p.fmv)}</span></div>
+                        {p.eli&&<div className="virow" style={{borderTop:"1px dashed var(--bdr)",paddingTop:8,marginTop:4}}>
+                          <span style={{color:"var(--gold-lt)",fontWeight:700}}>Zakat = FMV × 2.5%</span>
+                          <span className="vival" style={{color:"var(--gold-lt)"}}>{fsar(p.fmv*ZAKAT_R)}</span>
+                        </div>}
                         <div>
                           {p.eli
                             ?<span className="zbadge due">🌙 {t.zakatDue} — {fsar(p.fmv*ZAKAT_R)}</span>
