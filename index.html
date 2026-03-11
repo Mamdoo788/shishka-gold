@@ -309,10 +309,10 @@ const T = {
     gramParity:"Gram Parity (SAR · incl. 15% VAT)", perGram:"per gram",
     updated:"Updated:", refresh:"Refresh Gold Price", loading:"Getting latest price…",
     setManual:"Set price manually", hideManual:"Hide manual price entry",
-    usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
+    usdPerOz:"USD price per ounce", set:"Set", clearAuto:"Clear — return to automatic",
     scanner:"The Scanner", purity:"Purity (Karat)", weight:"Weight (Grams)",
     offer:"Dealer's Total Price (SAR ﷼)", deLayer:"Quote De-Layering",
-    basePrice:"السعر الأساسي (شامل الضريبة)", markup:"هامش الصنعة",
+    basePrice:"Base Price (incl. VAT)", markup:"Markup (Workmanship)",
     margin:"Effective Margin", matrix:"Sensitivity Matrix (Target Offer)",
     vatNote:"* Includes 15% statutory VAT", enterWeight:"Enter weight above to see target prices",
     fair:"Fair Price", okay:"A Bit High", high:"Overpriced",
@@ -340,10 +340,10 @@ const T = {
     gramParity:"سعر الجرام (ريال · شامل 15% ضريبة)", perGram:"لكل جرام",
     updated:"آخر تحديث:", refresh:"تحديث سعر الذهب", loading:"جارٍ التحديث…",
     setManual:"إدخال السعر يدوياً", hideManual:"إخفاء الإدخال اليدوي",
-    usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
+    usdPerOz:"USD price per ounce", set:"Set", clearAuto:"Clear — return to automatic",
     scanner:"فاحص الأسعار", purity:"العيار", weight:"الوزن (جرام)",
     offer:"سعر التاجر الإجمالي (ريال)", deLayer:"تحليل السعر",
-    basePrice:"السعر الأساسي (شامل الضريبة)", markup:"هامش الصنعة",
+    basePrice:"Base Price (incl. VAT)", markup:"Markup (Workmanship)",
     margin:"نسبة الهامش الفعلي", matrix:"مصفوفة الأهداف",
     vatNote:"* يشمل ضريبة القيمة المضافة 15%", enterWeight:"أدخل الوزن لعرض الأسعار المستهدفة",
     fair:"سعر عادل", okay:"مرتفع قليلاً", high:"مبالغ فيه",
@@ -707,16 +707,16 @@ function App(){
             {showOvr?"▲ "+t.hideManual:"✏️  "+t.setManual}
           </button>
           {showOvr&&<div className="obox">
-            <div className="olbl">USD price per ounce</div>
+            <div className="olbl">{t.usdPerOz}</div>
             <div className="orow">
               <input className="inp" type="number" inputMode="decimal"
                 placeholder="e.g. 3280" value={ovrIn}
                 onChange={e=>setOvrIn(e.target.value)}/>
-              <button className="sbtn" onClick={applyOvr}>Set</button>
+              <button className="sbtn" onClick={applyOvr}>{t.set}</button>
             </div>
             {status==="manual"&&<div className="clrlnk"
               onClick={()=>{setSpot(null);setStatus("fallback");setSource("Estimated");setOvrIn("");setShowOvr(false);}}>
-              Clear — return to automatic
+              {t.clearAuto}
             </div>}
           </div>}
         </div>
@@ -753,18 +753,18 @@ function App(){
             {/* Quote De-Layering */}
             <div className="matrix-lbl" style={{marginTop:0}}>{t.deLayer}</div>
             <div className="rrow">
-              <span className="rlbl">Base Price (incl. VAT)</span>
+              <span className="rlbl">{t.basePrice}</span>
               <span className="rval" style={{color:"var(--gold-lt)"}}>{fsar(ppg(eff,scanK)*scanGN)}</span>
             </div>
             {hasOffer&&mAmt!=null&&<>
               <div className="rrow">
-                <span className="rlbl">Markup (Workmanship)</span>
+                <span className="rlbl">{t.markup}</span>
                 <span className="rval" style={{color:mAmt>0?"var(--red)":"var(--grn)"}}>
                   {mAmt>=0?"+":""}{fsar(mAmt)}
                 </span>
               </div>
               <div className="rrow">
-                <span className="rlbl">Effective Margin</span>
+                <span className="rlbl">{t.margin}</span>
                 <span className="rval" style={{color:mPct>18?"var(--red)":mPct>5?"var(--amb)":"var(--grn)"}}>
                   {mPct>=0?"+":""}{f1(mPct)}%
                 </span>
@@ -776,12 +776,12 @@ function App(){
             <div className="matrix-grid">
               {[10,20,30].map(m=>(
                 <div key={m} className="matrix-cell">
-                  <div className="matrix-pct">{m}% Margin</div>
+                  <div className="matrix-pct">{m}%</div>
                   <div className="matrix-val">﷼ {f0(ppg(eff,scanK)*scanGN*(1+m/100))}</div>
                 </div>
               ))}
             </div>
-            <div className="matrix-note">* Includes 15% statutory VAT</div>
+            <div className="matrix-note">{t.vatNote}</div>
 
             {/* Verdict — only if dealer price entered */}
             {hasOffer&&vrd&&<div className={`vrd ${vrd}`} style={{marginTop:16}}>
@@ -804,7 +804,7 @@ function App(){
 
         {/* Sub-tab switcher */}
         <div style={{display:"flex",gap:10,padding:"0 16px",marginBottom:18}}>
-          {[["vault","📦 My Gold"],["zakat","🌙 Zakat"]].map(([id,lbl])=>(
+          {[["vault","📦 "+t.myGold],["zakat","🌙 "+t.zakat]].map(([id,lbl])=>(
             <button key={id} onClick={()=>setMoreTab(id)} style={{
               flex:1,padding:"13px 8px",
               background:moreTab===id?"#2A1C08":"var(--card)",
@@ -821,7 +821,7 @@ function App(){
             ?<AuthGate feature={t.vaultFeature}/>
             :<div className="sec" style={{paddingTop:0}}>
               {vault.length>0&&<div className="vsum">
-                <div><div className="slbl">Total Value</div><div className="sval">{fsar(tFmv)}</div></div>
+                <div><div className="slbl">{t.totalValue}</div><div className="sval">{fsar(tFmv)}</div></div>
                 <div>
                   <div className="slbl">{tPnl>=0?t.profit:t.loss}</div>
                   <div className="sval" style={{color:tPnl>=0?"var(--grn)":"var(--red)"}}>{fsar(Math.abs(tPnl))}</div>
@@ -829,15 +829,15 @@ function App(){
               </div>}
               <div className="vcard">
                 <div className="vhdr">
-                  <div className="vttl">Gold Holdings</div>
-                  <button className="vaddbtn" onClick={()=>setShowModal(true)}>+ Add</button>
+                  <div className="vttl">{t.myGold}</div>
+                  <button className="vaddbtn" onClick={()=>setShowModal(true)}>+ {t.addItem}</button>
                 </div>
                 {vault.length===0
                   ?<div className="vemp">
                     <div className="vempico">🏺</div>
-                    <div style={{color:"var(--cdim)",fontWeight:600}}>Track your gold here</div>
-                    <div style={{marginTop:6}}>Add a piece to see its current value.</div>
-                    <button className="vempadd" onClick={()=>setShowModal(true)}>Add My First Item</button>
+                    <div style={{color:"var(--cdim)",fontWeight:600}}>{t.noItems}</div>
+                    <div style={{marginTop:6}}>{t.addFirst}</div>
+                    <button className="vempadd" onClick={()=>setShowModal(true)}>{t.addItem}</button>
                   </div>
                   :vc.map((p,i)=>(
                     <div key={i} className="vitem">
@@ -845,7 +845,7 @@ function App(){
                         <div><div className="viname">{p.name}</div><span className="vikarat">{p.karat} · {p.grams}g</span></div>
                         <button className="vrm" onClick={()=>setVault(v=>v.filter((_,j)=>j!==i))}>×</button>
                       </div>
-                      <div className="virow"><span>Current Value</span><span className="vival" style={{color:"var(--gold-lt)"}}>{fsar(p.fmv)}</span></div>
+                      <div className="virow"><span>{t.totalValue}</span><span className="vival" style={{color:"var(--gold-lt)"}}>{fsar(p.fmv)}</span></div>
                       <div className="virow">
                         <span>{p.pnl>=0?t.profit:t.loss}</span>
                         <span className="vival" style={{color:p.pnl>=0?"var(--grn)":"var(--red)"}}>{fsar(Math.abs(p.pnl))}</span>
@@ -854,9 +854,7 @@ function App(){
                   ))
                 }
               </div>
-              <button className="signout-btn" onClick={handleSignOut}>
-                🚪 Sign out of Vault
-              </button>
+              <button className="signout-btn" onClick={handleSignOut}>🚪 {t.signOut}</button>
             </div>
           }
         </>}
@@ -867,29 +865,29 @@ function App(){
             ?<AuthGate feature={t.zakatFeature}/>
             :<div className="sec" style={{paddingTop:0}}>
               <div className="vcard">
-                <div className="vhdr"><div className="vttl">Zakat Status</div></div>
+                <div className="vhdr"><div className="vttl">{t.zakat}</div></div>
                 {vault.length===0
                   ?<div className="vemp">
                     <div className="vempico">🌙</div>
-                    <div style={{color:"var(--cdim)",fontWeight:600}}>No gold added yet</div>
-                    <div style={{marginTop:6}}>Add items in My Gold first.</div>
-                    <button className="vempadd" onClick={()=>setMoreTab("vault")}>Go to My Gold</button>
+                    <div style={{color:"var(--cdim)",fontWeight:600}}>{t.noItems}</div>
+                    <div style={{marginTop:6}}>{t.addFirst}</div>
+                    <button className="vempadd" onClick={()=>setMoreTab("vault")}>{t.myGold}</button>
                   </div>
                   :<>
                     {zDue>0&&<div style={{margin:"16px 18px 4px",padding:16,background:"#E8B84B14",border:"1px solid #E8B84B33",borderRadius:12,textAlign:"center"}}>
-                      <div style={{fontSize:10,color:"var(--muted)",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",marginBottom:6}}>Total Zakat Due</div>
+                      <div style={{fontSize:13,color:"var(--muted)",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",marginBottom:6}}>{t.totalZakat}</div>
                       <div style={{fontFamily:"'Nunito',sans-serif",fontSize:32,fontWeight:900,color:"var(--gold-lt)"}}>{fsar(zDue)}</div>
                       <div style={{fontSize:12,color:"var(--muted)",marginTop:4,fontWeight:500}}>2.5% of eligible holdings · AAOIFI standard · {ZAKAT_D} day Hijri cycle</div>
                     </div>}
                     {vc.map((p,i)=>(
                       <div key={i} className="vitem">
                         <div className="vitop"><div><div className="viname">{p.name}</div><span className="vikarat">{p.karat} · {p.grams}g</span></div></div>
-                        <div className="virow"><span>Days Held</span><span className="vival">{p.days} days</span></div>
-                        <div className="virow"><span>Current FMV</span><span className="vival">{fsar(p.fmv)}</span></div>
+                        <div className="virow"><span>{t.daysHeld}</span><span className="vival">{p.days} days</span></div>
+                        <div className="virow"><span>{t.totalValue}</span><span className="vival">{fsar(p.fmv)}</span></div>
                         <div>
                           {p.eli
-                            ?<span className="zbadge due">🌙 Zakat due — {fsar(p.fmv*ZAKAT_R)}</span>
-                            :<span className="zbadge mat">⏳ Eligible in {ZAKAT_D-p.days} days</span>
+                            ?<span className="zbadge due">🌙 {t.zakatDue} — {fsar(p.fmv*ZAKAT_R)}</span>
+                            :<span className="zbadge mat">⏳ {t.maturing} · {ZAKAT_D-p.days}</span>
                           }
                         </div>
                       </div>
@@ -919,9 +917,9 @@ function App(){
       {/* ADD ITEM MODAL */}
       {showModal&&<div className="movrl" onClick={e=>e.target===e.currentTarget&&setShowModal(false)}>
         <div className="modal">
-          <div className="mttl">Add a Gold Item</div>
+          <div className="mttl">{t.addItem}</div>
           <div className="mfld">
-            <label className="mlbl">Name</label>
+            <label className="mlbl">{t.itemName}</label>
             <input className="minp" type="text" placeholder="e.g. Gold Bracelet"
               value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))}/>
           </div>
@@ -933,24 +931,24 @@ function App(){
               </select>
             </div>
             <div className="mfld">
-              <label className="mlbl">Weight (g)</label>
+              <label className="mlbl">{t.weightG}</label>
               <input className="minp" type="number" inputMode="decimal" placeholder="15.5"
                 value={form.grams} onChange={e=>setForm(f=>({...f,grams:e.target.value}))}/>
             </div>
           </div>
           <div className="mfld">
-            <label className="mlbl">Date Purchased</label>
+            <label className="mlbl">{t.datePurchased}</label>
             <input className="minp" type="date" value={form.date}
               onChange={e=>setForm(f=>({...f,date:e.target.value}))}/>
           </div>
           <div className="mfld">
-            <label className="mlbl">Total Paid (SAR)</label>
+            <label className="mlbl">{t.totalPaidSAR}</label>
             <input className="minp" type="number" inputMode="decimal" placeholder="e.g. 4800"
               value={form.paid} onChange={e=>setForm(f=>({...f,paid:e.target.value}))}/>
           </div>
           <div className="mbtns">
             <button className="mcanc" onClick={()=>setShowModal(false)}>{t.cancel}</button>
-            <button className="msave" onClick={addItem}>Save Item</button>
+            <button className="msave" onClick={addItem}>{t.save}</button>
           </div>
         </div>
       </div>}
