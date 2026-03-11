@@ -132,7 +132,7 @@
     .flbl{font-size:13px;color:var(--dim);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;display:block;}
 
     /* Karat pills */
-    .kpills{display:flex;gap:8px;}
+    .kpills{display:flex;gap:8px;direction:ltr;}
     .kpill{flex:1;padding:14px 6px;background:#0A0703;border:1.5px solid var(--bdr);border-radius:12px;font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;}
     .kpill.on{background:#221A06;border-color:var(--gold);color:var(--gold-lt);}
 
@@ -229,6 +229,46 @@
     .nlock{position:absolute;top:4px;right:8px;font-size:12px;}
     select.inp,select.minp{cursor:pointer;}
     select option{background:#080604;color:var(--white);}
+
+    /* ── RTL SUPPORT ── */
+    [dir="rtl"] { font-size:20px; }
+    [dir="rtl"] .plbl { font-size:14px; }
+    [dir="rtl"] .flbl { font-size:15px; }
+    [dir="rtl"] .stitle { font-size:15px; }
+    [dir="rtl"] .slbl { font-size:14px; }
+    [dir="rtl"] .mlbl { font-size:15px; }
+    [dir="rtl"] .clock { font-size:15px; }
+    [dir="rtl"] .bsub { font-size:15px; }
+    [dir="rtl"] .bcredit { font-size:13px; }
+    [dir="rtl"] .rlbl { font-size:17px; }
+    [dir="rtl"] .rval { font-size:20px; }
+    [dir="rtl"] .nbtn { font-size:15px; }
+    [dir="rtl"] .matrix-pct { font-size:14px; }
+    [dir="rtl"] .matrix-val { font-size:21px; }
+    [dir="rtl"] .matrix-note { font-size:13px; }
+    [dir="rtl"] .vrddesc { font-size:17px; }
+    [dir="rtl"] .vrdttl { font-size:26px; }
+    [dir="rtl"] .viname { font-size:19px; }
+    [dir="rtl"] .virow { font-size:17px; }
+    [dir="rtl"] .zbadge { font-size:15px; }
+    [dir="rtl"] .price-row{direction:ltr;} /* numbers always LTR */
+    [dir="rtl"] .parity-row{direction:ltr;}
+    [dir="rtl"] .matrix-grid{direction:ltr;}
+    [dir="rtl"] .rrow{flex-direction:row-reverse;}
+    [dir="rtl"] .clock-row{flex-direction:row-reverse;}
+    [dir="rtl"] .vhdr{flex-direction:row-reverse;}
+    [dir="rtl"] .vitop{flex-direction:row-reverse;}
+    [dir="rtl"] .virow{flex-direction:row-reverse;}
+    [dir="rtl"] .orow{flex-direction:row-reverse;}
+    [dir="rtl"] .mbtns{flex-direction:row-reverse;}
+    [dir="rtl"] .zbadge{flex-direction:row-reverse;}
+    [dir="rtl"] .vsum{direction:ltr;} /* numbers LTR */
+    [dir="rtl"] .sval{direction:ltr;text-align:right;}
+    [dir="rtl"] .pbig{direction:ltr;text-align:right;}
+    [dir="rtl"] .inp{text-align:right;}
+    [dir="rtl"] .inp[type="number"]{text-align:left;direction:ltr;}
+    [dir="rtl"] .minp[type="number"]{text-align:left;direction:ltr;}
+    [dir="rtl"] .minp[type="date"]{text-align:left;direction:ltr;}
   </style>
 </head>
 <body>
@@ -259,6 +299,72 @@ const saveVault=(uid,data)=>{
   catch(e){console.error("save vault",e);}
 };
 
+
+// ── LANGUAGE DICTIONARY ────────────────────────────────────────────
+const T = {
+  en: {
+    appName:"Shishka Gold", subtitle:"Saudi Gold Price Calculator", credit:"by Doo7 for Shai5ah ♥",
+    live:"Live", estimated:"Estimated", manual:"Manual",
+    spotUSD:"Spot Ounce (USD)", spotSAR:"Spot Ounce (SAR)",
+    gramParity:"Gram Parity (SAR · incl. 15% VAT)", perGram:"per gram",
+    updated:"Updated:", refresh:"Refresh Gold Price", loading:"Getting latest price…",
+    setManual:"Set price manually", hideManual:"Hide manual price entry",
+    usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
+    scanner:"The Scanner", purity:"Purity (Karat)", weight:"Weight (Grams)",
+    offer:"Dealer's Total Price (SAR ﷼)", deLayer:"Quote De-Layering",
+    basePrice:"السعر الأساسي (شامل الضريبة)", markup:"هامش الصنعة",
+    margin:"Effective Margin", matrix:"Sensitivity Matrix (Target Offer)",
+    vatNote:"* Includes 15% statutory VAT", enterWeight:"Enter weight above to see target prices",
+    fair:"Fair Price", okay:"A Bit High", high:"Overpriced",
+    fairDesc:"This is a reasonable price. The extra charge is within normal range.",
+    okayDesc:(p)=>`The dealer is charging ${p}% above gold value. You may want to negotiate.`,
+    highDesc:(p)=>`The dealer is charging ${p}% above gold value. This is too high — try another dealer.`,
+    extraPaid:(a)=>`You are paying ${a} extra in workmanship`,
+    vaultTab:"Vault & Zakat", myGold:"My Gold", zakat:"Zakat",
+    totalValue:"Total Value", totalPaid:"Total Paid", pnl:"P&L",
+    addItem:"Add Item", itemName:"Name", goldType:"Gold Type",
+    weightG:"Weight in grams", datePurchased:"Date Purchased",
+    totalPaidSAR:"Total Paid (SAR)", save:"Save", cancel:"Cancel",
+    zakatDue:"Zakat Due", maturing:"Maturing", daysHeld:"Days held",
+    totalZakat:"Total Zakat Due", noItems:"No gold items yet",
+    addFirst:"Add your first piece", vaultTtl:"Your Personal Gold Vault",
+    vaultDesc:"Sign in to track your gold portfolio and calculate Zakat",
+    signIn:"Sign in with Google", signOut:"Sign Out",
+    signingIn:"Signing in…", profit:"Profit", loss:"Loss",
+    vaultFeature:"Vault", zakatFeature:"Zakat Audit",
+  },
+  ar: {
+    appName:"شيشكة جولد", subtitle:"حاسبة أسعار الذهب السعودي", credit:"من Doo7 لـ Shai5ah ♥",
+    live:"مباشر", estimated:"تقديري", manual:"يدوي",
+    spotUSD:"سعر الأوقية (دولار)", spotSAR:"سعر الأوقية (ريال)",
+    gramParity:"سعر الجرام (ريال · شامل 15% ضريبة)", perGram:"لكل جرام",
+    updated:"آخر تحديث:", refresh:"تحديث سعر الذهب", loading:"جارٍ التحديث…",
+    setManual:"إدخال السعر يدوياً", hideManual:"إخفاء الإدخال اليدوي",
+    usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
+    scanner:"فاحص الأسعار", purity:"العيار", weight:"الوزن (جرام)",
+    offer:"سعر التاجر الإجمالي (ريال)", deLayer:"تحليل السعر",
+    basePrice:"السعر الأساسي (شامل الضريبة)", markup:"هامش الصنعة",
+    margin:"نسبة الهامش الفعلي", matrix:"مصفوفة الأهداف",
+    vatNote:"* يشمل ضريبة القيمة المضافة 15%", enterWeight:"أدخل الوزن لعرض الأسعار المستهدفة",
+    fair:"سعر عادل", okay:"مرتفع قليلاً", high:"مبالغ فيه",
+    fairDesc:"هذا سعر معقول، الزيادة ضمن الحدود الطبيعية.",
+    okayDesc:(p)=>`التاجر يضيف ${p}% فوق سعر الذهب. يمكنك التفاوض.`,
+    highDesc:(p)=>`التاجر يضيف ${p}% فوق سعر الذهب. مرتفع جداً — جرّب تاجراً آخر.`,
+    extraPaid:(a)=>`تدفع ${a} ريال زيادة كأجرة صنعة`,
+    vaultTab:"خزنتي والزكاة", myGold:"ذهبي", zakat:"الزكاة",
+    totalValue:"إجمالي القيمة", totalPaid:"إجمالي المدفوع", pnl:"الربح والخسارة",
+    addItem:"إضافة قطعة", itemName:"الاسم", goldType:"نوع الذهب",
+    weightG:"الوزن بالجرام", datePurchased:"تاريخ الشراء",
+    totalPaidSAR:"المبلغ المدفوع (ريال)", save:"حفظ", cancel:"إلغاء",
+    zakatDue:"زكاة واجبة", maturing:"لم تكتمل الحولية", daysHeld:"أيام الاحتفاظ",
+    totalZakat:"إجمالي الزكاة الواجبة", noItems:"لا توجد قطع ذهب بعد",
+    addFirst:"أضف قطعتك الأولى", vaultTtl:"خزنتك الذهبية الشخصية",
+    vaultDesc:"سجّل دخولك لمتابعة محفظتك الذهبية وحساب الزكاة",
+    signIn:"تسجيل الدخول بجوجل", signOut:"تسجيل الخروج",
+    signingIn:"جارٍ الدخول…", profit:"ربح", loss:"خسارة",
+    vaultFeature:"الخزنة", zakatFeature:"تدقيق الزكاة",
+  }
+};
 // ── PRICE FETCH — CORS-proxy cascade ─────────────────────────────
 const CORS1="https://corsproxy.io/?";
 const CORS2="https://api.allorigins.win/raw?url=";
@@ -335,6 +441,8 @@ const GoogleLogo=()=>(
 // ── APP ───────────────────────────────────────────────────────────
 function App(){
   const [page,setPage]=useState("main");
+  const [lang,setLang]=useState("ar");
+  const t=T[lang];
   const [moreTab,setMoreTab]=useState("vault");
 
   // Price state
@@ -342,7 +450,7 @@ function App(){
   const [status,setStatus]=useState("loading");
   const [source,setSource]=useState(null);
   const [clockStr,setClockStr]=useState("");
-  const [showOvr,setShowOvr]=useState(true);
+  const [showOvr,setShowOvr]=useState(false);
   const [ovrIn,setOvrIn]=useState("");
 
   // Scanner state
@@ -494,15 +602,11 @@ function App(){
     <div className="sec" style={{paddingTop:32}}>
       <div className="auth-gate">
         <div className="auth-ico">🔐</div>
-        <div className="auth-ttl">Sign In Required</div>
-        <div className="auth-desc">
-          Your {feature} is private and personal.<br/>
-          Sign in with Google to access it securely.
-          Your data stays on this device, linked to your account.
-        </div>
+        <div className="auth-ttl">{t.signIn}</div>
+        <div className="auth-desc">{t.vaultDesc}</div>
         <button className="google-btn" onClick={handleSignIn} disabled={signingIn||!fbReady}>
           <GoogleLogo/>
-          {signingIn?"Signing in…":!fbReady?"Loading…":"Sign in with Google"}
+          {signingIn?t.signingIn:!fbReady?"Loading…":t.signIn}
         </button>
         {!fbReady&&<p style={{marginTop:12,fontSize:11,color:"var(--muted)",textAlign:"center"}}>
           ⚠️ Firebase not configured yet. Add your Firebase config to the HTML file.
@@ -528,24 +632,31 @@ function App(){
   };
 
   return(
-    <div className="app">
+    <div className="app" dir={lang==="ar"?"rtl":"ltr"} style={{fontFamily:"'Nunito',sans-serif"}}>
 
       {/* HEADER */}
       <div className="hdr">
         <div className="brand">
           <div className="bico"><GoldBar/></div>
           <div>
-            <div className="bname">Shishka Gold</div>
-            <div className="bsub">Saudi Gold Price Calculator<br/><span className="bcredit">by Doo7 for Shai5ah ♥</span></div>
+            <div className="bname">{t.appName}</div>
+            <div className="bsub">{t.subtitle}<br/><span className="bcredit">{t.credit}</span></div>
           </div>
         </div>
-        {user
-          ?<UserPill/>
-          :<div className="spill">
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <button onClick={()=>setLang(l=>l==="en"?"ar":"en")} style={{
+            background:"var(--card2)",border:"1.5px solid var(--gold-dk)",borderRadius:20,
+            color:"var(--gold-lt)",padding:"7px 14px",fontFamily:"'Nunito',sans-serif",
+            fontSize:14,fontWeight:800,cursor:"pointer"
+          }}>{lang==="en"?"ع":"EN"}</button>
+          {user
+            ?<UserPill/>
+            :<div className="spill">
             <div className={`sdot ${status}`}/>
-            <span>{status==="loading"?"Updating…":source}</span>
+            <span>{status==="loading"?t.loading:source}</span>
           </div>
-        }
+          }
+        </div>
       </div>
 
       {/* ── MAIN PAGE: PRICE + SCANNER ── */}
@@ -553,20 +664,20 @@ function App(){
         <div className="sec">
           <div className="pcard">
             <div className="clock-row">
-              <span className="clock">Updated: <span>{clockStr}</span></span>
-              {status==="fallback"&&<span style={{fontSize:13,color:"var(--amb)",fontWeight:700}}>⚠ Estimated</span>}
-              {status==="manual"&&<span style={{fontSize:13,color:"#A78BFA",fontWeight:700}}>✏ Manual</span>}
+              <span className="clock">{t.updated} <span>{clockStr}</span></span>
+              {status==="fallback"&&<span style={{fontSize:13,color:"var(--amb)",fontWeight:700}}>⚠ {t.estimated}</span>}
+              {status==="manual"&&<span style={{fontSize:13,color:"#A78BFA",fontWeight:700}}>✏ {t.manual}</span>}
             </div>
             <div className="price-row">
               <div>
-                <div className="plbl">Spot (USD)</div>
+                <div className="plbl">{t.spotUSD}</div>
                 <div className="pbig main">
                   {status==="loading"?<span style={{fontSize:26,color:"var(--muted)"}}>…</span>
                   :<span>{fusd(eff)}<span className="punit">/ oz</span></span>}
                 </div>
               </div>
               <div>
-                <div className="plbl">Spot (SAR)</div>
+                <div className="plbl">{t.spotSAR}</div>
                 <div className="pbig" style={{fontSize:32}}>
                   {status==="loading"?<span style={{fontSize:22,color:"var(--muted)"}}>…</span>
                   :<span>{fsarShort(eff*USD_SAR)}<span className="punit">/ oz</span></span>}
@@ -574,26 +685,26 @@ function App(){
               </div>
             </div>
             <div style={{marginBottom:14}}>
-              <div className="plbl" style={{marginBottom:8}}>Gram Parity (SAR · incl. 15% VAT)</div>
+              <div className="plbl" style={{marginBottom:8}}>{t.gramParity}</div>
               <div className="parity-row">
                 {["24K","21K","18K"].map((k,i)=>(
                   <div key={k} className={`parity-cell${i===1?" mid":""}`}>
                     <div className="parity-k">{k}</div>
                     <div className="parity-v">{fsarShort(ppg(eff,k))}</div>
-                    <div className="parity-lbl">per gram</div>
+                    <div className="parity-lbl">{t.perGram}</div>
                   </div>
                 ))}
               </div>
             </div>
             <button className="rbtn" onClick={fetchPrice} disabled={status==="loading"}>
               <span>{status==="loading"?"⏳":"🔄"}</span>
-              {status==="loading"?"Getting latest price…":"Refresh Gold Price"}
+              {status==="loading"?t.loading:t.refresh}
             </button>
           </div>
         </div>
         <div className="sec" style={{paddingBottom:8}}>
           <button className="otoggle" onClick={()=>setShowOvr(s=>!s)}>
-            {showOvr?"▲ Hide manual entry":"✏️  Enter price manually"}
+            {showOvr?"▲ "+t.hideManual:"✏️  "+t.setManual}
           </button>
           {showOvr&&<div className="obox">
             <div className="olbl">USD price per ounce</div>
@@ -613,10 +724,10 @@ function App(){
 
         {/* ── THE SCANNER ── */}
         <div className="sec" style={{paddingBottom:8}}>
-          <div className="stitle" style={{marginBottom:14}}>The Scanner</div>
+          <div className="stitle" style={{marginBottom:14}}>{t.scanner}</div>
           <div className="scard">
           <div className="fg">
-            <span className="flbl">Gold Type</span>
+            <span className="flbl">{t.purity}</span>
             <div className="kpills">
               {["24K","21K","18K"].map(k=>(
                 <button key={k} className={`kpill${scanK===k?" on":""}`}
@@ -625,13 +736,13 @@ function App(){
             </div>
           </div>
           <div className="fg">
-            <label className="flbl">Weight in Grams</label>
+            <label className="flbl">{t.weight}</label>
             <input className="inp" type="number" inputMode="decimal"
               placeholder="e.g. 15.5" value={scanG}
               onChange={e=>setScanG(e.target.value)} style={{width:"100%"}}/>
           </div>
           <div className="fg">
-            <label className="flbl">Dealer's Total Price (SAR ﷼) — optional</label>
+            <label className="flbl">{t.offer}</label>
             <input className="inp" type="number" inputMode="decimal"
               placeholder="e.g. 8500" value={scanP}
               onChange={e=>setScanP(e.target.value)} style={{width:"100%"}}/>
@@ -640,7 +751,7 @@ function App(){
           {hasWeight?<>
             <div className="dvdr"/>
             {/* Quote De-Layering */}
-            <div className="matrix-lbl" style={{marginTop:0}}>Quote De-Layering</div>
+            <div className="matrix-lbl" style={{marginTop:0}}>{t.deLayer}</div>
             <div className="rrow">
               <span className="rlbl">Base Price (incl. VAT)</span>
               <span className="rval" style={{color:"var(--gold-lt)"}}>{fsar(ppg(eff,scanK)*scanGN)}</span>
@@ -661,7 +772,7 @@ function App(){
             </>}
 
             {/* Sensitivity Matrix */}
-            <div className="matrix-lbl">Sensitivity Matrix (Target Offer)</div>
+            <div className="matrix-lbl">{t.matrix}</div>
             <div className="matrix-grid">
               {[10,20,30].map(m=>(
                 <div key={m} className="matrix-cell">
@@ -675,15 +786,15 @@ function App(){
             {/* Verdict — only if dealer price entered */}
             {hasOffer&&vrd&&<div className={`vrd ${vrd}`} style={{marginTop:16}}>
               <div className="vrdico">{vrd==="fair"?"✅":vrd==="okay"?"⚠️":"❌"}</div>
-              <div className="vrdttl">{vrd==="fair"?"Fair Price":vrd==="okay"?"A Bit High":"Overpriced"}</div>
+              <div className="vrdttl">{vrd==="fair"?t.fair:vrd==="okay"?t.okay:t.high}</div>
               <div className="vrddesc">
-                {vrd==="fair"?"This is a reasonable price. The extra charge is within normal range."
-                :vrd==="okay"?`The dealer is charging ${f1(mPct)}% above gold value. You may want to negotiate.`
-                :`The dealer is charging ${f1(mPct)}% above gold value. This is too high — try another dealer.`}
+                {vrd==="fair"?t.fairDesc
+                :vrd==="okay"?t.okayDesc(f1(mPct))
+                :t.highDesc(f1(mPct))}
               </div>
-              {mAmt!=null&&mAmt>0&&<div className="vrdamt">You are paying {fsar(mAmt)} extra in workmanship</div>}
+              {mAmt!=null&&mAmt>0&&<div className="vrdamt">{t.extraPaid(fsar(mAmt))}</div>}
             </div>}
-          </>:<div className="sph">Enter weight above to see target prices</div>}
+          </>:<div className="sph">{t.enterWeight}</div>}
           </div>
         </div>
       </>}
@@ -707,12 +818,12 @@ function App(){
         {/* VAULT — gated */}
         {moreTab==="vault"&&<>
           {!user
-            ?<AuthGate feature="Vault"/>
+            ?<AuthGate feature={t.vaultFeature}/>
             :<div className="sec" style={{paddingTop:0}}>
               {vault.length>0&&<div className="vsum">
                 <div><div className="slbl">Total Value</div><div className="sval">{fsar(tFmv)}</div></div>
                 <div>
-                  <div className="slbl">{tPnl>=0?"Profit":"Loss"}</div>
+                  <div className="slbl">{tPnl>=0?t.profit:t.loss}</div>
                   <div className="sval" style={{color:tPnl>=0?"var(--grn)":"var(--red)"}}>{fsar(Math.abs(tPnl))}</div>
                 </div>
               </div>}
@@ -736,7 +847,7 @@ function App(){
                       </div>
                       <div className="virow"><span>Current Value</span><span className="vival" style={{color:"var(--gold-lt)"}}>{fsar(p.fmv)}</span></div>
                       <div className="virow">
-                        <span>{p.pnl>=0?"Profit":"Loss"}</span>
+                        <span>{p.pnl>=0?t.profit:t.loss}</span>
                         <span className="vival" style={{color:p.pnl>=0?"var(--grn)":"var(--red)"}}>{fsar(Math.abs(p.pnl))}</span>
                       </div>
                     </div>
@@ -753,7 +864,7 @@ function App(){
         {/* ZAKAT — gated */}
         {moreTab==="zakat"&&<>
           {!user
-            ?<AuthGate feature="Zakat Audit"/>
+            ?<AuthGate feature={t.zakatFeature}/>
             :<div className="sec" style={{paddingTop:0}}>
               <div className="vcard">
                 <div className="vhdr"><div className="vttl">Zakat Status</div></div>
@@ -794,8 +905,8 @@ function App(){
       {/* BOTTOM NAV */}
       <div className="bnav">
         {[
-          ["main","💰","Price & Scanner",false],
-          ["more","⋯","Vault & Zakat",!user]
+          ["main","💰",lang==="ar"?"السعر والفاحص":"Price & Scanner",false],
+          ["more","⋯",t.vaultTab,!user]
         ].map(([id,ico,lbl,locked])=>(
           <button key={id} className={`nbtn${page===id?" on":""}`} onClick={()=>setPage(id)}>
             <span className="nico">{ico}</span>
@@ -816,7 +927,7 @@ function App(){
           </div>
           <div className="mrow">
             <div className="mfld">
-              <label className="mlbl">Gold Type</label>
+              <label className="mlbl">{t.goldType}</label>
               <select className="minp" value={form.karat} onChange={e=>setForm(f=>({...f,karat:e.target.value}))}>
                 <option>24K</option><option>21K</option><option>18K</option>
               </select>
@@ -838,7 +949,7 @@ function App(){
               value={form.paid} onChange={e=>setForm(f=>({...f,paid:e.target.value}))}/>
           </div>
           <div className="mbtns">
-            <button className="mcanc" onClick={()=>setShowModal(false)}>Cancel</button>
+            <button className="mcanc" onClick={()=>setShowModal(false)}>{t.cancel}</button>
             <button className="msave" onClick={addItem}>Save Item</button>
           </div>
         </div>
