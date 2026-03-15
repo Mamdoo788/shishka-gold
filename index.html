@@ -345,7 +345,7 @@ const T = {
     usdPerOz:"USD price per ounce", set:"Set", clearAuto:"Clear — return to automatic",
     scanner:"The Scanner", purity:"Purity (Karat)", weight:"Weight (Grams)",
     offer:"Dealer's Total Price (SAR ﷼)", deLayer:"Quote De-Layering",
-    basePrice:"Base Price", basePpg:"Base Price per Gram", markup:"Markup (Workmanship)",
+    basePrice:"Base Price", basePpg:"Base Price per Gram", markup:"Markup (Workmanship)", totalPpg:"You're Paying per Gram",
     margin:"Effective Margin", matrix:"Sensitivity Matrix (Target Offer)",
     vatNote:"* Includes 15% statutory VAT", enterWeight:"Enter weight above to see target prices",
     vrdBelowTitle:"Below Spot — Red Flag",
@@ -397,7 +397,7 @@ const T = {
     usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
     scanner:"فاحص الأسعار", purity:"العيار", weight:"الوزن (جرام)",
     offer:"سعر التاجر الإجمالي (ريال)", deLayer:"تحليل السعر",
-    basePrice:"السعر الأساسي", basePpg:"السعر الأساسي للجرام", markup:"هامش الصنعة",
+    basePrice:"السعر الأساسي", basePpg:"السعر الأساسي للجرام", markup:"هامش الصنعة", totalPpg:"إجمالي ما تدفعه للجرام",
     margin:"نسبة الهامش الفعلي", matrix:"مصفوفة الأهداف",
     vatNote:"* يشمل ضريبة القيمة المضافة 15%", enterWeight:"أدخل الوزن لعرض الأسعار المستهدفة",
     vrdBelowTitle:"سعر أقل من الإفصاح — تحقق",
@@ -871,6 +871,14 @@ function App(){
                 </div>
                 <div className="dpg" style={{color:mAmt>0?"var(--red)":"var(--grn)"}}>
                   {mAmt>=0?"+":""}﷼ {f0(mAmt/scanGN)}{lang==="ar"?"/جرام":"/g"}
+                </div>
+              </div>
+
+              {/* Total per gram — subtotal line */}
+              <div className="drow" style={{borderTop:"1px solid var(--gold-dk)",marginTop:4,paddingTop:16}}>
+                <div className="dlbl" style={{color:"var(--gold)"}}>{t.totalPpg}</div>
+                <div className="dval" style={{color:"var(--gold-lt)",fontSize:26}}>
+                  ﷼ {f0(ppgV(eff,scanK) + mAmt/scanGN)}{lang==="ar"?"/جرام":"/g"}
                 </div>
               </div>
 
