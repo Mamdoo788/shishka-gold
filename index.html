@@ -143,6 +143,11 @@
 
     /* Result rows */
     .dvdr{height:1px;background:var(--bdr);margin:18px 0;}
+    .drow{padding:12px 0;border-bottom:1px solid #2E220830;}
+    .drow:last-child{border-bottom:none;}
+    .dlbl{font-size:12px;font-weight:700;letter-spacing:.07em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+    .dval{font-size:22px;font-weight:800;color:var(--white);}
+    .dpg{font-size:16px;font-weight:700;color:var(--muted);margin-top:3px;}
     .rrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #2E220820;}
     .rrow:last-child{border-bottom:none;}
     .rlbl{font-size:15px;color:var(--dim);font-weight:600;}
@@ -319,7 +324,7 @@ const T = {
     usdPerOz:"USD price per ounce", set:"Set", clearAuto:"Clear — return to automatic",
     scanner:"The Scanner", purity:"Purity (Karat)", weight:"Weight (Grams)",
     offer:"Dealer's Total Price (SAR ﷼)", deLayer:"Quote De-Layering",
-    basePrice:"Base Price (incl. VAT)", markup:"Markup (Workmanship)",
+    basePrice:"Base Price (incl. VAT)", basePpg:"Base Price per Gram", markup:"Markup (Workmanship)",
     margin:"Effective Margin", matrix:"Sensitivity Matrix (Target Offer)",
     vatNote:"* Includes 15% statutory VAT", enterWeight:"Enter weight above to see target prices",
     vrdBelowTitle:"Below Spot — Red Flag",
@@ -368,7 +373,7 @@ const T = {
     usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
     scanner:"فاحص الأسعار", purity:"العيار", weight:"الوزن (جرام)",
     offer:"سعر التاجر الإجمالي (ريال)", deLayer:"تحليل السعر",
-    basePrice:"السعر الأساسي (شامل الضريبة)", markup:"هامش الصنعة",
+    basePrice:"السعر الأساسي (شامل الضريبة)", basePpg:"السعر الأساسي للجرام", markup:"هامش الصنعة",
     margin:"نسبة الهامش الفعلي", matrix:"مصفوفة الأهداف",
     vatNote:"* يشمل ضريبة القيمة المضافة 15%", enterWeight:"أدخل الوزن لعرض الأسعار المستهدفة",
     vrdBelowTitle:"سعر أقل من الإفصاح — تحقق",
@@ -738,7 +743,7 @@ function App(){
                 <div className="plbl">{t.spotSAR}</div>
                 <div className="pbig" style={{fontSize:32}}>
                   {status==="loading"?<span style={{fontSize:22,color:"var(--muted)"}}>…</span>
-                  :<span>{fsarShort(eff*USD_SAR)}<span className="punit">/ oz</span></span>}
+                  :<span>{Math.round(eff*USD_SAR).toLocaleString("en-SA")}<span className="punit">/ oz</span></span>}
                 </div>
               </div>
             </div>
@@ -748,7 +753,7 @@ function App(){
                 {["24K","21K","18K"].map((k,i)=>(
                   <div key={k} className="parity-cell">
                     <div className="parity-k">{k}</div>
-                    <div className="parity-v">{fsarShort(ppg(eff,k))}</div>
+                    <div className="parity-v">{f0(ppg(eff,k))}</div>
                     <div className="parity-lbl">{t.perGram}</div>
                   </div>
                 ))}
@@ -810,22 +815,32 @@ function App(){
             <div className="dvdr"/>
             {/* Quote De-Layering */}
             <div className="matrix-lbl" style={{marginTop:0}}>{t.deLayer}</div>
-            <div className="rrow">
-              <span className="rlbl">{t.basePrice}</span>
-              <span className="rval" style={{color:"var(--gold-lt)"}}>{fsar(ppg(eff,scanK)*scanGN)}</span>
+
+            {/* Base Price — total */}
+            <div className="drow">
+              <div className="dlbl">{t.basePrice}</div>
+              <div className="dval" style={{color:"var(--gold-lt)"}}>﷼ {f0(ppg(eff,scanK)*scanGN)}</div>
+              <div className="dpg">﷼ {f0(ppg(eff,scanK))}{lang==="ar"?"/جرام":"/g"}</div>
             </div>
+
             {hasOffer&&mAmt!=null&&<>
-              <div className="rrow">
-                <span className="rlbl">{t.markup}</span>
-                <span className="rval" style={{color:mAmt>0?"var(--red)":"var(--grn)"}}>
-                  {mAmt>=0?"+":""}{fsar(mAmt)}
-                </span>
+              {/* Markup — total + per gram */}
+              <div className="drow">
+                <div className="dlbl">{t.markup}</div>
+                <div className="dval" style={{color:mAmt>0?"var(--red)":"var(--grn)"}}>
+                  {mAmt>=0?"+":""}﷼ {f0(mAmt)}
+                </div>
+                <div className="dpg" style={{color:mAmt>0?"var(--red)":"var(--grn)"}}>
+                  {mAmt>=0?"+":""}﷼ {f0(mAmt/scanGN)}{lang==="ar"?"/جرام":"/g"}
+                </div>
               </div>
-              <div className="rrow">
-                <span className="rlbl">{t.margin}</span>
-                <span className="rval" style={{color:mPct>18?"var(--red)":mPct>5?"var(--amb)":"var(--grn)"}}>
+
+              {/* Effective Margin % */}
+              <div className="drow">
+                <div className="dlbl">{t.margin}</div>
+                <div className="dval" style={{color:mPct>30?"var(--red)":mPct>15?"var(--amb)":mPct<5?"var(--amb)":"var(--grn)"}}>
                   {mPct>=0?"+":""}{f1(mPct)}%
-                </span>
+                </div>
               </div>
             </>}
 
@@ -836,6 +851,9 @@ function App(){
                 <div key={m} className="matrix-cell">
                   <div className="matrix-pct">{m}%</div>
                   <div className="matrix-val">﷼ {f0(ppg(eff,scanK)*scanGN*(1+m/100))}</div>
+                  <div className="matrix-val" style={{fontSize:14,marginTop:4}}>
+                    ﷼ {f0(ppg(eff,scanK)*(1+m/100))}{lang==="ar"?"/جرام":"/g"}
+                  </div>
                 </div>
               ))}
             </div>
@@ -859,7 +877,7 @@ function App(){
                   <div className="vrdico">{v.ico}</div>
                   <div className="vrdttl">{v.title}</div>
                   <div className="vrddesc">{v.desc}</div>
-                  {mAmt!=null&&<div className="vrdamt">{t.extraPaid(fsar(Math.abs(mAmt)))}</div>}
+                  {mAmt!=null&&<div className="vrdamt">{t.extraPaid("﷼ "+f0(Math.abs(mAmt)))}</div>}
 
                 </div>
               );
