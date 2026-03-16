@@ -339,7 +339,7 @@ const T = {
     gramParity:"Gram Parity (SAR)", perGram:"per gram",
     vatIncl:"VAT INCLUDED ✓", vatExcl:"VAT EXCLUDED ⚠",
     vatBanner:"Prices shown BEFORE 15% VAT — add 15% for actual market price",
-    vatLabel:"VAT 15%",
+    vatLabel:"VAT 15%", verifyLabel:"Verify price on:",
     updated:"Updated:", refresh:"Refresh Gold Price", loading:"Getting latest price…",
     setManual:"Set price manually", hideManual:"Hide manual price entry",
     usdPerOz:"USD price per ounce", set:"Set", clearAuto:"Clear — return to automatic",
@@ -391,7 +391,7 @@ const T = {
     gramParity:"سعر الجرام (ريال)", perGram:"لكل جرام",
     vatIncl:"شامل الضريبة ✓", vatExcl:"بدون الضريبة ⚠",
     vatBanner:"الأسعار بدون ضريبة القيمة المضافة — أضف 15% للسعر الفعلي",
-    vatLabel:"ضريبة 15%",
+    vatLabel:"ضريبة 15%", verifyLabel:"تحقق من السعر على:",
     updated:"آخر تحديث:", refresh:"تحديث سعر الذهب", loading:"جارٍ التحديث…",
     setManual:"إدخال السعر يدوياً", hideManual:"إخفاء الإدخال اليدوي",
     usdPerOz:"سعر الأوقية بالدولار", set:"تعيين", clearAuto:"مسح — العودة للتلقائي",
@@ -802,6 +802,34 @@ function App(){
               <span>{status==="loading"?"⏳":"🔄"}</span>
               {status==="loading"?t.loading:t.refresh}
             </button>
+            {/* ── VERIFY PRICE LINKS ── */}
+            <div style={{
+              marginTop:12,padding:"10px 14px",borderRadius:12,
+              background:status==="fallback"?"#F59E0B14":"transparent",
+              border:status==="fallback"?"1px solid #F59E0B44":"1px solid transparent",
+              display:"flex",alignItems:"center",flexWrap:"wrap",gap:8,
+              transition:"all .3s"
+            }}>
+              <span style={{fontSize:12,fontWeight:700,color:status==="fallback"?"var(--amb)":"var(--muted)",
+                letterSpacing:".04em",textTransform:"uppercase",flexShrink:0}}>
+                {status==="fallback"?"⚠ ":""}{t.verifyLabel}
+              </span>
+              {[
+                {label:"Kitco",       url:"https://www.kitco.com/charts/gold"},
+                {label:"Investing",   url:"https://www.investing.com/currencies/xau-usd"},
+                {label:"BullionVault",url:"https://www.bullionvault.com/gold-price-chart.do"},
+              ].map(({label,url})=>(
+                <a key={label} href={url} target="_blank" rel="noopener" style={{
+                  fontSize:12,fontWeight:800,
+                  color:status==="fallback"?"var(--amb)":"var(--muted)",
+                  textDecoration:"none",
+                  background:status==="fallback"?"#F59E0B18":"var(--card2)",
+                  border:`1px solid ${status==="fallback"?"#F59E0B44":"var(--bdr)"}`,
+                  borderRadius:8,padding:"5px 10px",
+                  transition:"all .3s",letterSpacing:".02em"
+                }}>{label} ↗</a>
+              ))}
+            </div>
           </div>
         </div>
         <div className="sec" style={{paddingBottom:8}}>
